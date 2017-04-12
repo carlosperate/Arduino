@@ -16,7 +16,9 @@ import static processing.app.I18n.tr;
 public class CommandlineParser {
 
   private enum ACTION {
-    GUI, NOOP, VERIFY("--verify"), UPLOAD("--upload"), GET_PREF("--get-pref"), INSTALL_BOARD("--install-boards"), INSTALL_LIBRARY("--install-library");
+    GUI, NOOP, VERIFY("--verify"), UPLOAD("--upload"), GET_PREF("--get-pref"),
+        INSTALL_BOARD("--install-boards"), CHECK_BOARD("--check-boards"),
+        INSTALL_LIBRARY("--instal-library"), CHECK_LIBRARY("--check-library");
 
     final String value;
 
@@ -40,7 +42,9 @@ public class CommandlineParser {
   private boolean forceSavePrefs = false;
   private String getPref;
   private String boardToInstall;
+  private String boardToCheck;
   private String libraryToInstall;
+  private String libraryToCheck;
   private final List<String> filenames = new LinkedList<>();
 
   public CommandlineParser(String[] args) {
@@ -51,7 +55,9 @@ public class CommandlineParser {
     actions.put("--upload", ACTION.UPLOAD);
     actions.put("--get-pref", ACTION.GET_PREF);
     actions.put("--install-boards", ACTION.INSTALL_BOARD);
+    actions.put("--check-boards", ACTION.CHECK_BOARD);
     actions.put("--install-library", ACTION.INSTALL_LIBRARY);
+    actions.put("--check-library", ACTION.CHECK_LIBRARY);
   }
 
   public void parseArgumentsPhase1() {
@@ -77,12 +83,26 @@ public class CommandlineParser {
           }
           boardToInstall = args[i];
         }
+        if (a == ACTION.CHECK_BOARD) {
+          i++;
+          if (i >= args.length) {
+            BaseNoGui.showError(null, I18n.format(tr("Argument required for {0}"), a.value), 3);
+          }
+          boardToCheck = args[i];
+        }
         if (a == ACTION.INSTALL_LIBRARY) {
           i++;
           if (i >= args.length) {
             BaseNoGui.showError(null, I18n.format(tr("Argument required for {0}"), a.value), 3);
           }
           libraryToInstall = args[i];
+        }
+        if (a == ACTION.CHECK_LIBRARY) {
+          i++;
+          if (i >= args.length) {
+            BaseNoGui.showError(null, I18n.format(tr("Argument required for {0}"), a.value), 3);
+          }
+          libraryToCheck = args[i];
         }
         action = a;
         continue;
@@ -336,16 +356,32 @@ public class CommandlineParser {
     return action == ACTION.INSTALL_BOARD;
   }
 
+  public boolean isCheckBoard() {
+    return action == ACTION.CHECK_BOARD;
+  }
+
   public boolean isInstallLibrary() {
     return action == ACTION.INSTALL_LIBRARY;
+  }
+  
+  public boolean isCheckLibrary() {
+    return action == ACTION.CHECK_LIBRARY;
   }
 
   public String getBoardToInstall() {
     return this.boardToInstall;
   }
+  
+  public String getBoardToCheck() {
+    return this.boardToCheck;
+  }
 
   public String getLibraryToInstall() {
     return libraryToInstall;
+  }
+  
+  public String getLibraryToCheck() {
+    return libraryToCheck;
   }
 
   public boolean isPreserveTempFiles() {

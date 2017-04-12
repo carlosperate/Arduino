@@ -320,7 +320,9 @@ public class Base {
       }
 
       System.exit(0);
-
+    } else if (parser.isCheckBoard()) {
+      System.out.println(tr("Checking board..."));
+      System.exit(0);
     } else if (parser.isInstallLibrary()) {
       BaseNoGui.onBoardOrPortChange();
 
@@ -360,6 +362,9 @@ public class Base {
 
       System.exit(0);
 
+    } else if (parser.isCheckLibrary()) {
+      System.out.println(tr("Checking library..."));
+      System.exit(0);
     } else if (parser.isVerifyOrUploadMode()) {
       // Set verbosity for command line build
       PreferencesData.setBoolean("build.verbose", parser.isDoVerboseBuild());
